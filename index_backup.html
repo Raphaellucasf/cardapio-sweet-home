@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Home | Cardápio Digital de Churros e Sorvetes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos customizados */
+        html { 
+            scroll-behavior: smooth; 
+        }
+        
+        .nav-category { 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        
+        .product-image { 
+            object-fit: cover; 
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .add-to-cart:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Menu mobile flutuante */
+        .mobile-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .mobile-menu::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .mobile-menu::-webkit-scrollbar-thumb {
+            background: #ec4899;
+            border-radius: 4px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-pink-700 to-pink-600 text-white shadow-lg p-4 sticky top-0 z-50">
+        <h1 class="text-3xl font-bold text-center">Sweet Home Churros E Sorvetes 🍨</h1>
+        <p class="text-sm text-center mt-1">📍 Rua Adail Jarbas Duclos, 72 - Francisco Morato</p>
+        <div class="flex justify-around mt-3 text-sm font-semibold">
+            <span class="bg-green-500 px-3 py-1 rounded-full">🟢 Aberto</span>
+            <span class="bg-white text-pink-700 px-3 py-1 rounded-full">🕒 40-50 min.</span>
+            <a href="https://wa.me/5511947931906" target="_blank" 
+               class="bg-white text-pink-700 px-3 py-1 rounded-full hover:bg-yellow-300 transition duration-300">
+                📱 (11) 94793-1906
+            </a>
+        </div>
+    </header>
+
+    <!-- Sidebar Desktop -->
+    <nav id="sidebar" class="hidden md:block w-52 fixed top-32 left-0 p-4 space-y-2 bg-white shadow-lg rounded-r-lg z-40">
+        <h3 class="font-bold border-b-2 border-pink-500 pb-2 text-lg text-pink-700">Categorias</h3>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#churros">🥨 Churros</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#combos">🎁 Combos</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#acai">💜 Açaí</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#combos-acai">💜 Combos de Açaí</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#cupuacu">🍋 Cupuaçu</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#milkshakes">🥤 Milk Shakes</a>
+        <a class="block text-sm text-pink-700 hover:text-pink-900 hover:bg-pink-50 p-2 rounded nav-category font-semibold" href="#sorvetes">🍦 Sorvetes</a>
+    </nav>
+
+    <!-- Menu Mobile Flutuante -->
+    <div class="mobile-menu md:hidden">
+        <div class="flex p-3 space-x-2">
+            <a href="#churros" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">🥨 Churros</a>
+            <a href="#combos" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">🎁 Combos</a>
+            <a href="#acai" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">💜 Açaí</a>
+            <a href="#combos-acai" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">💜 Combos Açaí</a>
+            <a href="#cupuacu" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">🍋 Cupuaçu</a>
+            <a href="#milkshakes" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">🥤 Shakes</a>
+            <a href="#sorvetes" class="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">🍦 Sorvetes</a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="md:ml-52 p-4 pb-20">
+        
+        <!-- CHURROS -->
+        <section id="churros" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">CHURROS 🥨</h2>
+            
+            <!-- Churros Espanhol 7un -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex items-center justify-between hover:shadow-xl" 
+                 data-item="Churros Espanhol (7 unidades)"
+                 data-type="options">
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900">CHURROS ESPANHOL (7 un.)</h3>
+                    <p class="text-gray-600 text-sm italic mt-1">Churros espanhol com 7 unidades. Clique para verificar os sabores disponíveis.</p>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/80x80/ec4899/ffffff?text=Churros" alt="Churros Espanhol" class="product-image w-20 h-20 rounded-lg mr-4 shadow">
+                    <button class="add-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Churros Espanhol Gourmet -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex items-center justify-between hover:shadow-xl"
+                 data-item="Churros Espanhol Gourmet"
+                 data-type="options">
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900">CHURROS ESPANHOL GOURMET</h3>
+                    <p class="text-gray-600 text-sm italic mt-1">Clique para verificar os sabores disponíveis</p>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/80x80/ec4899/ffffff?text=Gourmet" alt="Churros Gourmet" class="product-image w-20 h-20 rounded-lg mr-4 shadow">
+                    <button class="add-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Churros Trufado -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex items-center justify-between hover:shadow-xl"
+                 data-item="Churros Trufado"
+                 data-type="options">
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900">CHURROS TRUFADO</h3>
+                    <p class="text-gray-600 text-sm italic mt-1">Churros com recheio especial trufado. Escolha seu sabor favorito!</p>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/80x80/ec4899/ffffff?text=Trufado" alt="Churros Trufado" class="product-image w-20 h-20 rounded-lg mr-4 shadow">
+                    <button class="add-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bandejinha Trufada -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex items-center justify-between hover:shadow-xl"
+                 data-item="Bandejinha Trufada"
+                 data-type="options">
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900">BANDEJINHA TRUFADA</h3>
+                    <p class="text-gray-600 text-sm italic mt-1">Bandeja especial de churros trufados. Perfeita para compartilhar!</p>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/80x80/ec4899/ffffff?text=Bandeja" alt="Bandejinha Trufada" class="product-image w-20 h-20 rounded-lg mr-4 shadow">
+                    <button class="add-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barca de Churros Espanhol - DESTAQUE -->
+            <div class="product-card bg-gradient-to-r from-yellow-100 to-yellow-50 p-5 shadow-lg rounded-lg mb-4 border-2 border-yellow-400 hover:shadow-2xl"
+                 data-item="Barca de Churros Espanhol (14 unidades)"
+                 data-type="options">
+                <div class="flex items-center justify-between">
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-2xl font-extrabold text-gray-900">BARCA DE CHURROS ESPANHOL</h3>
+                            <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">DESTAQUE</span>
+                        </div>
+                        <p class="text-gray-700 text-sm italic mt-1 font-semibold">14 churros espanhol na barca! Ideal para festas e reuniões!</p>
+                    </div>
+                    <div class="flex items-center">
+                        <img src="https://via.placeholder.com/80x80/fbbf24/ffffff?text=Barca" alt="Barca de Churros" class="product-image w-20 h-20 rounded-lg mr-4 shadow">
+                        <button class="add-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                            +
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        
+        <hr class="border-t-2 border-gray-300 my-8">
+
+        <!-- COMBOS -->
+        <section id="combos" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">COMBOS 🎁</h2>
+            
+            <!-- Combo Eita Lasqueira -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Eita Lasqueira"
+                 data-price="45.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO EITA LASQUEIRA</h3>
+                <p class="text-gray-600 text-sm mt-1">O combo contém: 1 churros espanhol + 1 açaí mix 500ml + 1 milkshake 500ml</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 45,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Combo Duplo Espanhol Shake -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Duplo Espanhol Shake"
+                 data-price="50.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO DUPLO ESPANHOL SHAKE</h3>
+                <p class="text-gray-600 text-sm mt-1">O combo contém: 2 churros espanhol + 2 milkshake 300ml</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 50,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Combo Espanhol Família -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Espanhol Família"
+                 data-price="56.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO ESPANHOL FAMÍLIA</h3>
+                <p class="text-gray-600 text-sm mt-1">O combo contém: Barca 14 unidades + 2 churros espanhol</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 56,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+            
+        </section>
+        
+        <hr class="border-t-2 border-gray-300 my-8">
+        
+        <!-- AÇAÍ -->
+        <section id="acai" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">AÇAÍ 💜</h2>
+            
+            <!-- Açaí Tradicional -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Tradicional"
+                 data-type="sizes"
+                 data-base-price="16.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRADICIONAL</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">O açaí acompanha banana e leite condensado</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 16,00)
+                </button>
+            </div>
+
+            <!-- Açaí Mix -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Mix"
+                 data-type="sizes"
+                 data-base-price="20.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ MIX</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí com mix de frutas e complementos deliciosos</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 20,00)
+                </button>
+            </div>
+            
+            <!-- Açaí Trufado - Morango -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Creme de Morango"
+                 data-type="sizes"
+                 data-base-price="25.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM CREME DE MORANGO</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Morango, uva, granola, leite condensado, creme de morango</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 25,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Doce de Leite -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Doce de Leite"
+                 data-type="sizes"
+                 data-base-price="25.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM DOCE DE LEITE</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí cremoso com delicioso creme de doce de leite</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 25,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Chocolate -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Chocolate"
+                 data-type="sizes"
+                 data-base-price="25.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM CHOCOLATE</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí premium com trufa de chocolate irresistível</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 25,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Chocolate Branco -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Chocolate Branco"
+                 data-type="sizes"
+                 data-base-price="25.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM CHOCOLATE BRANCO</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí com creme suave de chocolate branco</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 25,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Avelã -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Avelã"
+                 data-type="sizes"
+                 data-base-price="27.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM AVELÃ</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí sofisticado com creme de avelã</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 27,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Kinder Bueno -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Kinder Bueno"
+                 data-type="sizes"
+                 data-base-price="28.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM KINDER BUENO</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí premium com trufa de Kinder Bueno</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 28,00)
+                </button>
+            </div>
+
+            <!-- Açaí Trufado - Pistache -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Açaí Trufado com Pistache"
+                 data-type="sizes"
+                 data-base-price="30.00">
+                <h3 class="text-xl font-bold text-gray-900">AÇAÍ TRUFADO COM PISTACHE</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Açaí exclusivo com creme de pistache</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 30,00)
+                </button>
+            </div>
+
+            <!-- Marmita de Açaí Trufado -->
+            <div class="product-card bg-gradient-to-r from-purple-100 to-purple-50 p-5 shadow-lg rounded-lg mb-4 border-2 border-purple-400 flex flex-col hover:shadow-2xl"
+                 data-item="Marmita de Açaí Trufado"
+                 data-type="sizes"
+                 data-base-price="35.00">
+                <div class="flex items-center gap-2 mb-2">
+                    <h3 class="text-xl font-bold text-gray-900">MARMITA DE AÇAÍ TRUFADO</h3>
+                    <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">ESPECIAL</span>
+                </div>
+                <p class="text-gray-700 text-sm italic mt-1 mb-3 font-semibold">Açaí trufado em marmita grande! Escolha seu sabor preferido.</p>
+                
+                <button class="select-btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Sabor e Pedir (A partir de R$ 35,00)
+                </button>
+            </div>
+            
+        </section>
+        
+        <hr class="border-t-2 border-gray-300 my-8">
+
+        <!-- COMBOS DE AÇAÍ -->
+        <section id="combos-acai" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">COMBOS DE AÇAÍ 💜</h2>
+            
+            <!-- Combo Duplo Açaí Tradicional -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Duplo Açaí Tradicional"
+                 data-price="30.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO DUPLO AÇAÍ TRADICIONAL</h3>
+                <p class="text-gray-600 text-sm mt-1">2 copos de açaí tradicional</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 30,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Combo Duplo Mix -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Duplo Mix"
+                 data-price="36.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO DUPLO MIX</h3>
+                <p class="text-gray-600 text-sm mt-1">2 copos de açaí mix</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 36,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Combo Duplo Trufados -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 hover:shadow-xl"
+                 data-item="Combo Duplo Trufados"
+                 data-price="42.00">
+                <h3 class="text-xl font-bold text-gray-900">COMBO DUPLO TRUFADOS</h3>
+                <p class="text-gray-600 text-sm mt-1">2 copos de açaí trufado (escolha os sabores)</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-3xl font-extrabold text-pink-600">R$ 42,00</span>
+                    <button class="add-btn-direct bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-full shadow-lg text-xl transition duration-300">
+                        +
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <hr class="border-t-2 border-gray-300 my-8">
+
+        <!-- CUPUAÇU -->
+        <section id="cupuacu" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">CUPUAÇU 🍋</h2>
+            
+            <!-- Cupuaçu Tradicional -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Cupuaçu Tradicional"
+                 data-type="sizes"
+                 data-base-price="16.00">
+                <h3 class="text-xl font-bold text-gray-900">CUPUAÇU TRADICIONAL</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Cupuaçu cremoso com banana e leite condensado</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 16,00)
+                </button>
+            </div>
+
+            <!-- Cupuaçu Mix -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Cupuaçu Mix"
+                 data-type="sizes"
+                 data-base-price="20.00">
+                <h3 class="text-xl font-bold text-gray-900">CUPUAÇU MIX</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Cupuaçu com mix de frutas e complementos</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 20,00)
+                </button>
+            </div>
+
+            <!-- Cupuaçu Trufado -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Cupuaçu Trufado"
+                 data-type="sizes"
+                 data-base-price="25.00">
+                <h3 class="text-xl font-bold text-gray-900">CUPUAÇU TRUFADO</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Cupuaçu premium com trufa (escolha seu sabor favorito)</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Sabor (A partir de R$ 25,00)
+                </button>
+            </div>
+
+        </section>
+
+        <hr class="border-t-2 border-gray-300 my-8">
+
+        <!-- MILK SHAKES -->
+        <section id="milkshakes" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">MILK SHAKES 🥤</h2>
+            
+            <!-- Milkshake Tradicional -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Tradicional"
+                 data-type="sizes"
+                 data-base-price="12.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE TRADICIONAL</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Escolha o sabor: Chocolate, Morango, Baunilha, Flocos</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Sabor (A partir de R$ 12,00)
+                </button>
+            </div>
+
+            <!-- Milkshake Sensação -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Sensação"
+                 data-type="sizes"
+                 data-base-price="15.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE SENSAÇÃO</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Milkshake especial com sabores sensacionais</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 15,00)
+                </button>
+            </div>
+
+            <!-- Milkshake Ninho com Nutella -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Ninho com Nutella"
+                 data-type="sizes"
+                 data-base-price="18.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE NINHO COM NUTELLA</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Combinação perfeita de Ninho com Nutella</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 18,00)
+                </button>
+            </div>
+
+            <!-- Milkshake Ferrero Rocher -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Ferrero Rocher"
+                 data-type="sizes"
+                 data-base-price="20.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE FERRERO ROCHER</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Milkshake sofisticado com Ferrero Rocher</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 20,00)
+                </button>
+            </div>
+
+            <!-- Milkshake Pistache -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Pistache"
+                 data-type="sizes"
+                 data-base-price="22.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE PISTACHE</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Milkshake exclusivo com sabor de pistache</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 22,00)
+                </button>
+            </div>
+
+            <!-- Milkshake Nutella -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Milkshake Nutella"
+                 data-type="sizes"
+                 data-base-price="17.00">
+                <h3 class="text-xl font-bold text-gray-900">MILKSHAKE NUTELLA</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Milkshake cremoso com Nutella</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Pedir (A partir de R$ 17,00)
+                </button>
+            </div>
+
+        </section>
+
+        <hr class="border-t-2 border-gray-300 my-8">
+
+        <!-- SORVETES -->
+        <section id="sorvetes" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-pink-700 border-b-4 border-pink-500 pb-2 mb-6">SORVETES 🍦</h2>
+            
+            <!-- Top Sundae -->
+            <div class="product-card bg-white p-5 shadow-md rounded-lg mb-4 flex flex-col hover:shadow-xl"
+                 data-item="Top Sundae"
+                 data-type="sizes"
+                 data-base-price="14.00">
+                <h3 class="text-xl font-bold text-gray-900">TOP SUNDAE</h3>
+                <p class="text-gray-600 text-sm italic mt-1 mb-3">Delicioso sundae que acompanha uma cobertura especial</p>
+                
+                <button class="select-btn bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-lg text-base transition duration-300">
+                    Escolher Tamanho e Cobertura (A partir de R$ 14,00)
+                </button>
+            </div>
+
+        </section>
+        
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-6 mt-8 border-t-2">
+            <p class="font-semibold">© 2025 Sweet Home Churros E Sorvetes</p>
+            <p class="text-xs mt-1">Todos os direitos reservados</p>
+            <p class="text-xs mt-2">📍 Rua Adail Jarbas Duclos, 72 - Francisco Morato</p>
+            <p class="text-xs">📱 (11) 94793-1906</p>
+        </footer>
+        
+    </main>
+
+    <!-- Modal para Seleção de Opções -->
+    <div id="optionsModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modalTitle" class="text-2xl font-bold text-pink-700">Escolha as Opções</h2>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
+            </div>
+            <div id="modalBody" class="mb-4">
+                <!-- Conteúdo dinâmico -->
+            </div>
+            <button id="sendOrder" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                Enviar Pedido pelo WhatsApp 📱
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const phoneNumber = '5511947931906';
+        let currentItem = '';
+        let currentPrice = '';
+
+        // Função para abrir modal
+        function openModal(title, content, item, price = '') {
+            currentItem = item;
+            currentPrice = price;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('optionsModal').classList.add('active');
+        }
+
+        // Função para fechar modal
+        function closeModal() {
+            document.getElementById('optionsModal').classList.remove('active');
+        }
+
+        // Botões que abrem modal de opções (churros e outros com sabores)
+        document.querySelectorAll('.add-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.currentTarget.closest('.product-card');
+                const item = card.getAttribute('data-item');
+                
+                const content = `
+                    <p class="text-gray-700 mb-4">Selecione os sabores e adicionais para <strong>${item}</strong>:</p>
+                    <div class="space-y-2 mb-4">
+                        <label class="block">
+                            <input type="checkbox" class="mr-2" value="Doce de Leite">
+                            Doce de Leite
+                        </label>
+                        <label class="block">
+                            <input type="checkbox" class="mr-2" value="Chocolate">
+                            Chocolate
+                        </label>
+                        <label class="block">
+                            <input type="checkbox" class="mr-2" value="Morango">
+                            Morango
+                        </label>
+                        <label class="block">
+                            <input type="checkbox" class="mr-2" value="Nutella">
+                            Nutella
+                        </label>
+                        <label class="block">
+                            <input type="checkbox" class="mr-2" value="Creme de Avelã">
+                            Creme de Avelã
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-2">Observações:</label>
+                        <textarea id="observations" class="w-full border rounded p-2" rows="3" placeholder="Ex: sem açúcar, mais crocante, etc."></textarea>
+                    </div>
+                `;
+                
+                openModal('Personalize seu Pedido', content, item);
+            });
+        });
+
+        // Botões de seleção de tamanho (açaí, milkshake, etc)
+        document.querySelectorAll('.select-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.currentTarget.closest('.product-card');
+                const item = card.getAttribute('data-item');
+                const basePrice = card.getAttribute('data-base-price');
+                
+                const content = `
+                    <p class="text-gray-700 mb-4">Selecione o tamanho para <strong>${item}</strong>:</p>
+                    <div class="space-y-2 mb-4">
+                        <label class="block p-3 border rounded hover:bg-pink-50 cursor-pointer">
+                            <input type="radio" name="size" class="mr-2" value="300ml" data-price="${basePrice}">
+                            300ml - R$ ${basePrice}
+                        </label>
+                        <label class="block p-3 border rounded hover:bg-pink-50 cursor-pointer">
+                            <input type="radio" name="size" class="mr-2" value="500ml" data-price="${(parseFloat(basePrice) + 5).toFixed(2)}">
+                            500ml - R$ ${(parseFloat(basePrice) + 5).toFixed(2)}
+                        </label>
+                        <label class="block p-3 border rounded hover:bg-pink-50 cursor-pointer">
+                            <input type="radio" name="size" class="mr-2" value="700ml" data-price="${(parseFloat(basePrice) + 10).toFixed(2)}">
+                            700ml - R$ ${(parseFloat(basePrice) + 10).toFixed(2)}
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-2">Observações:</label>
+                        <textarea id="observations" class="w-full border rounded p-2" rows="3" placeholder="Alguma observação especial?"></textarea>
+                    </div>
+                `;
+                
+                openModal('Escolha o Tamanho', content, item, basePrice);
+            });
+        });
+
+        // Botões de pedido direto (combos com preço fixo)
+        document.querySelectorAll('.add-btn-direct').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.currentTarget.closest('.product-card');
+                const item = card.getAttribute('data-item');
+                const price = card.getAttribute('data-price');
+                
+                const message = `Olá! Gostaria de fazer o pedido:\n\n*${item}*\nValor: R$ ${price}\n\nAguardo confirmação! 😊`;
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+        });
+
+        // Enviar pedido do modal
+        document.getElementById('sendOrder').addEventListener('click', () => {
+            const observations = document.getElementById('observations')?.value || '';
+            let selectedOptions = [];
+            
+            // Coletar checkboxes selecionados
+            document.querySelectorAll('#modalBody input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedOptions.push(checkbox.value);
+            });
+            
+            // Coletar radio button selecionado (tamanho)
+            const selectedSize = document.querySelector('#modalBody input[type="radio"]:checked');
+            if (selectedSize) {
+                const size = selectedSize.value;
+                const price = selectedSize.getAttribute('data-price');
+                selectedOptions.push(`Tamanho: ${size} (R$ ${price})`);
+            }
+            
+            let message = `Olá! Gostaria de fazer o pedido:\n\n*${currentItem}*\n`;
+            
+            if (selectedOptions.length > 0) {
+                message += `\nOpções selecionadas:\n${selectedOptions.map(opt => `- ${opt}`).join('\n')}`;
+            }
+            
+            if (observations) {
+                message += `\n\nObservações: ${observations}`;
+            }
+            
+            message += '\n\nAguardo confirmação! 😊';
+            
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            closeModal();
+        });
+
+        // Fechar modal
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('optionsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'optionsModal') {
+                closeModal();
+            }
+        });
+
+        // Scroll suave para navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 100;
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
